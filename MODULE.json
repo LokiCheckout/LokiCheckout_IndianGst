@@ -2,7 +2,7 @@
     "modules": [],
     "config": [],
     "tests": [],
-    "module_name": "Yireo_IndianGst",
+    "module_name": "LokiCheckout_IndianGst",
     "composer_name": "loki-checkout/magento2-indian-gst",
     "php_versions": [
         "8.2",
