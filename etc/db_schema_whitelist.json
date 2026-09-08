@@ -1,0 +1,12 @@
+{
+    "quote_address": {
+        "column": {
+            "gst_number": true
+        }
+    },
+    "sales_order_address": {
+        "column": {
+            "gst_number": true
+        }
+    }
+}

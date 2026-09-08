@@ -1,0 +1,19 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Loki\Components\Factory\ViewModelFactory;
+use LokiCheckout\IndianGst\ViewModel\GstNumberValue;
+use Magento\Framework\View\Element\Template;
+
+/** @version 0.1.0 */
+/** @var Escaper $escaper */
+/** @var Template $block */
+/** @var ViewModelFactory $viewModelFactory */
+$viewModel = $viewModelFactory->create(GstNumberValue::class);
+$gstNumber = $viewModel->getValue($block);
+if (empty($gstNumber)) {
+    return;
+}
+?>
+<br/><?= $escaper->escapeHtml(__('GST')) ?>: <?= $escaper->escapeHtml($gstNumber) ?>

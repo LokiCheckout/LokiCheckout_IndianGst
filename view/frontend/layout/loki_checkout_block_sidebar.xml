@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:View/Layout:etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="loki-checkout.sidebar.preview.shipping_details.additional_address_info">
+            <block
+                name="loki-checkout.sidebar.preview.shipping_details.additional_address_info.gst_number" as="gst_number"
+                template="LokiCheckout_IndianGst::sidebar/gst-number.phtml"/>
+        </referenceBlock>
+
+        <referenceBlock name="loki-checkout.sidebar.preview.billing_address.additional_address_info">
+            <block
+                name="loki-checkout.sidebar.preview.billing_address.additional_address_info.gst_number" as="gst_number"
+                template="LokiCheckout_IndianGst::sidebar/gst-number.phtml"/>
+        </referenceBlock>
+    </body>
+</page>

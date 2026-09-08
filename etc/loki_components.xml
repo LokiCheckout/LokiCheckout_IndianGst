@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<components xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Loki_Components:etc/loki_components.xsd">
+    <component
+        name="loki-checkout.shipping.address.gst_number"
+        group="shippingAddressFields"
+        viewModel="LokiCheckout\IndianGst\Component\Checkout\Address\GstNumber\GstNumberViewModel"
+        repository="LokiCheckout\IndianGst\Component\Checkout\Address\GstNumber\GstNumberRepository">
+        <validator name="indianGstNumber"/>
+        <filter name="uppercase"/>
+        <filter name="remove_spaces"/>
+    </component>
+
+    <component
+        name="loki-checkout.billing.address.gst_number"
+        group="billingAddressFields"
+        viewModel="LokiCheckout\IndianGst\Component\Checkout\Address\GstNumber\GstNumberViewModel"
+        repository="LokiCheckout\IndianGst\Component\Checkout\Address\GstNumber\GstNumberRepository">
+        <validator name="indianGstNumber"/>
+        <filter name="uppercase"/>
+        <filter name="remove_spaces"/>
+    </component>
+</components>

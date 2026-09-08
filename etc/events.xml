@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="customer_address_format">
+        <observer name="lokicheckout_indiangst_add_gst_number_to_address_format" instance="LokiCheckout\IndianGst\Observer\AddGstNumberToAddressFormat"/>
+    </event>
+    <event name="sales_model_service_quote_submit_before">
+        <observer name="lokicheckout_indiangst_copy_gst_number_to_order" instance="LokiCheckout\IndianGst\Observer\CopyGstNumberToOrderAddress"/>
+    </event>
+</config>

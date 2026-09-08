@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:View/Layout:etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="loki-checkout.shipping.address.form">
+            <block
+                name="loki-checkout.shipping.address.gst_number" as="gst_number"
+                template="Loki_FieldComponents::form/field.phtml">
+                <arguments>
+                    <argument name="placeholder" xsi:type="string">22AAAAA0000A1Z5</argument>
+                    <argument name="field_attributes" xsi:type="array">
+                        <item name="max" xsi:type="number">15</item>
+                    </argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+
+        <referenceBlock name="loki-checkout.billing.address.form">
+            <block
+                name="loki-checkout.billing.address.gst_number" as="gst_number"
+                template="Loki_FieldComponents::form/field.phtml">
+                <arguments>
+                    <argument name="placeholder" xsi:type="string">22AAAAA0000A1Z5</argument>
+                    <argument name="field_attributes" xsi:type="array">
+                        <item name="max" xsi:type="number">15</item>
+                    </argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+    </body>
+</page>

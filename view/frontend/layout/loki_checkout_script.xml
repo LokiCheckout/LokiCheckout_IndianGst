@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:View/Layout:etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="loki.script">
+            <block
+                name="loki-checkout.script.validators.gst_number"
+                template="LokiCheckout_IndianGst::script/validator/indian-gst-number.phtml"/>
+        </referenceBlock>
+    </body>
+</page>
