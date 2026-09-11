@@ -27,5 +27,12 @@
         "psr-4": {
             "LokiCheckout\\IndianGst\\": ""
         }
+    },
+    "extra": {
+        "loki": {
+            "countries": [
+                "IN"
+            ]
+        }
     }
 }
