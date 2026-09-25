@@ -1,7 +1,0 @@
-{
-    "extends": "../../../node_modules/@loki/config/tsconfig.json",
-    "compilerOptions": {
-        "types": ["node", "@playwright/test"]
-    },
-    "include": ["**/*.ts"]
-}
