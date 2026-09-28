@@ -5,3 +5,5 @@
 .gitlab-ci-local
 .playwright
 .gitlab-ci-local
+.playwright
+.gitlab-ci-local
