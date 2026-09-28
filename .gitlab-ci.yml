@@ -103,6 +103,9 @@ unit-tests:
     - COMPOSER_DEV_REQUIREMENTS=`jq -r '.["require-dev"] // {} | to_entries | map("\(.key):\(.value|gsub("[[:space:]]+"; ""))") | join(" ")' composer.json`
     - rm -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
     - cd /tmp/magento
+    - rm -rf var/ && mkdir /dev/shm/var && ln -s /dev/shm/var var/
+    - rm -rf generated/ && mkdir /dev/shm/generated && ln -s /dev/shm/generated generated/
+    #- rm -rf pub/static/ && mkdir /dev/shm/pub-static && ln -s /dev/shm/pub-static pub/static/
     - test -f $CI_PROJECT_DIR/.gitlab-ci/composer-additional.sh && source $CI_PROJECT_DIR/.gitlab-ci/composer-additional.sh
     - test -f $CI_PROJECT_DIR/.gitlab-ci/composer-${MAGENTO_VERSION}.sh && source $CI_PROJECT_DIR/.gitlab-ci/composer-${MAGENTO_VERSION}.sh
     - composer config gitlab-domains gitlab.yireo.com
@@ -243,12 +246,13 @@ playwright:
     - bin/magento setup:static-content:deploy -f --area frontend en_US
     - bin/magento loki-checkout:sample-data:add-product
     - bin/magento loki-checkout:modules:dump
+    - bin/magento loki:functional-tests:modules:dump
     - magerun2 config:store:set loki_checkout/functional_tests/token loki -n
     - bin/magento cache:flush config
     - echo "Verify Magento installation"
     - test -f /tmp/magento/bin/magento || exit 1
     - echo "Run Playwright tests"
-    - cd /tmp/magento/vendor/loki-checkout/magento2-functional-tests/Test/Playwright/
+    - cd /tmp/magento/vendor/loki/magento2-functional-tests/Test/Playwright/
     - echo "Installing npm dependencies..."
     - npm install
     - npx playwright install chromium

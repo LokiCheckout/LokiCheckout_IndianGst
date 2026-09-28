@@ -12,7 +12,16 @@
     ],
     "skip_magento_versions": [],
     "skip_css_utils": false,
-    "sequence": [],
+    "sequence": [
+        "Magento_Customer",
+        "Magento_Eav",
+        "Magento_Quote",
+        "Magento_Sales",
+        "Magento_Store",
+        "LokiCheckout_Core",
+        "Loki_FieldComponents",
+        "Loki_Components"
+    ],
     "phpcs_severity": 10,
     "phpstan_level": 1
 }
