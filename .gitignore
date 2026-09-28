@@ -7,3 +7,6 @@
 .gitlab-ci-local
 .playwright
 .gitlab-ci-local
+.playwright
+.opencode
+.gitlab-ci-local
