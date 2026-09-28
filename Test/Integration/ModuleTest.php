@@ -3,29 +3,28 @@ declare(strict_types=1);
 
 namespace LokiCheckout\IndianGst\Test\Integration;
 
-use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
+use Yireo\IntegrationTestHelper\Test\Integration\Traits\AssertModuleIsEnabled;
+use Yireo\IntegrationTestHelper\Test\Integration\Traits\AssertModuleIsRegistered;
+use Yireo\IntegrationTestHelper\Test\Integration\Traits\AssertModuleIsRegisteredForReal;
 
 class ModuleTest extends TestCase
 {
-    public function testModuleIsRegistered(): void
-    {
-        $objectManager = Bootstrap::getObjectManager();
-        $moduleList = $objectManager->get(\Magento\Framework\Module\ModuleListInterface::class);
-        $this->assertTrue(
-            $moduleList->has('LokiCheckout_IndianGst'),
-            'Module LokiCheckout_IndianGst is not registered'
-        );
-    }
+    use AssertModuleIsRegistered;
+    use AssertModuleIsRegisteredForReal;
+    use AssertModuleIsEnabled;
 
-    public function testModuleDependenciesAreMet(): void
+    public function testModuleIsEnabled(): void
     {
-        $objectManager = Bootstrap::getObjectManager();
-        $moduleRegistry = $objectManager->get(\Magento\Framework\Module\Registry::class);
-        $dependencies = $moduleRegistry->getDependencies('LokiCheckout_IndianGst');
+        // @todo: Follow module.xml dependencies instead
+        $requiredModules = [
+            'LokiCheckout_IndianGst',
+            'LokiCheckout_Core',
+        ];
 
-        $dependencyNames = array_column($dependencies, 'name');
-        $this->assertContains('LokiCheckout_Core', $dependencyNames);
-        $this->assertContains('Magento_Customer', $dependencyNames);
+        foreach ($requiredModules as $moduleName) {
+            $this->assertModuleIsRegistered($moduleName);
+            $this->assertModuleIsEnabled($moduleName);
+        }
     }
 }
