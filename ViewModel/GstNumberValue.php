@@ -18,6 +18,6 @@ class GstNumberValue implements ArgumentInterface
     {
         $addressState = $this->addressStateProvider->getAddressState($block);
 
-        return trim((string)$addressState->get('gst_number'));
+        return trim((string)$addressState->get('gst_number'), " \f\n\r\t\v\x00");
     }
 }
