@@ -1,14 +1,12 @@
-import { defineConfig } from '@loki/config';
-import { IndianGst } from './modules';
+import coreConfig from '@loki-checkout/config';
 
-export default defineConfig({
-    modules: [IndianGst],
-    magerunConfig: {
-        storeConfig: {
-            'general/country/default': 'IN',
-        },
-    },
-    systemConfig: {
-        'loki_checkout/functional_tests/token': 'loki',
-    },
-});
+export default {
+    ...coreConfig,
+    modules: [
+        'LokiCheckout_IndianGst',
+    ],
+    config: {
+        ...coreConfig.config,
+        'payment/checkmo/active': '1',
+    }
+};

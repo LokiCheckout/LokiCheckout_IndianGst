@@ -1,117 +1,57 @@
-import { test, expect } from '@playwright/test';
-import { setupCheckout } from '@loki/config';
-import { PaymentMethod, ShippingMethod, PlaceOrderButton, SuccessPage } from '@loki/functional-tests';
-import { Field } from '@loki/functional-tests';
+import {Field, PaymentMethod, PlaceOrderButton, SuccessPage} from '@loki-checkout/checkout-objects';
+import {setupCheckout} from '@loki/setup-checkout';
+import {test, expect} from '@loki/test';
+import moduleConfig from './config/config';
 
 const VALID_GST = '27AAAPL1234C1Z5';
 const INVALID_GST = 'INVALIDGST1234';
 
+async function switchToIndia(page) {
+    await new Field(page, 'shipping.country_id').fill('IN');
+    await page.reload();
+
+    await new Field(page, 'shipping.region').fill('Maharashtra');
+    await new Field(page, 'shipping.city').fill('Mumbai');
+    await new Field(page, 'shipping.postcode').fill('400001');
+}
+
 test.describe('Indian GST Number field', () => {
-    test('should show GST field when country is India', async ({ page }) => {
-        await setupCheckout({
-            page,
-            productSku: 'loki-24-mb01',
-            quantity: 1,
-            country: 'IN',
-            shippingMethod: ShippingMethod.FlatRate,
-            paymentMethod: PaymentMethod.CheckMoneyOrder,
-            customer: {
-                email: 'gst-test@example.com',
-                firstname: 'Test',
-                lastname: 'User',
-                street: ['123 Test Street'],
-                city: 'Mumbai',
-                postcode: '400001',
-                telephone: '9876543210',
-                region: 'Maharashtra',
-            },
-        });
+    test('should show GST field when country is India', async ({page, context}) => {
+        await setupCheckout(page, context, moduleConfig);
+        await switchToIndia(page);
 
-        const gstField = page.locator('[data-type="field"][name="gst_number"]').first();
-        await expect(gstField).toBeVisible();
+        const gstField = new Field(page, 'shipping.gst_number');
+        await expect(gstField.getLocator()).toBeVisible();
     });
 
-    test('should show validation error for invalid GST number', async ({ page }) => {
-        await setupCheckout({
-            page,
-            productSku: 'loki-24-mb01',
-            quantity: 1,
-            country: 'IN',
-            shippingMethod: ShippingMethod.FlatRate,
-            paymentMethod: PaymentMethod.CheckMoneyOrder,
-            customer: {
-                email: 'gst-test2@example.com',
-                firstname: 'Test',
-                lastname: 'User',
-                street: ['123 Test Street'],
-                city: 'Mumbai',
-                postcode: '400001',
-                telephone: '9876543210',
-                region: 'Maharashtra',
-            },
-        });
+    test('should mark an invalid GST number as invalid', async ({page, context}) => {
+        await setupCheckout(page, context, moduleConfig);
+        await switchToIndia(page);
 
-        const gstField = page.locator('[data-type="field"][name="gst_number"]').first();
+        const gstField = new Field(page, 'shipping.gst_number');
         await gstField.fill(INVALID_GST);
-        await gstField.dispatchEvent(new Event('change'));
 
-        await page.waitForTimeout(500);
-
-        const errorMessage = page.locator('.text-error').first();
-        await expect(errorMessage).toBeVisible({ timeout: 5000 });
+        await expect(gstField.getLocator()).toHaveAttribute('aria-invalid', 'true');
     });
 
-    test('should accept valid GST number and place order', async ({ page }) => {
-        await setupCheckout({
-            page,
-            productSku: 'loki-24-mb01',
-            quantity: 1,
-            country: 'IN',
-            shippingMethod: ShippingMethod.FlatRate,
-            paymentMethod: PaymentMethod.CheckMoneyOrder,
-            customer: {
-                email: 'gst-test3@example.com',
-                firstname: 'Test',
-                lastname: 'User',
-                street: ['123 Test Street'],
-                city: 'Mumbai',
-                postcode: '400001',
-                telephone: '9876543210',
-                region: 'Maharashtra',
-            },
-        });
+    test('should accept a valid GST number and place the order', async ({page, context}) => {
+        await setupCheckout(page, context, moduleConfig);
+        await switchToIndia(page);
 
-        const gstField = page.locator('[data-type="field"][name="gst_number"]').first();
+        const gstField = new Field(page, 'shipping.gst_number');
         await gstField.fill(VALID_GST);
+        await expect(gstField.getLocator()).not.toHaveAttribute('aria-invalid', 'true');
 
-        await PlaceOrderButton.click(page);
-        await SuccessPage.waitFor(page);
+        await new PaymentMethod(page, 'checkmo').select();
+        await new PlaceOrderButton(page).click();
 
-        const orderNumber = await SuccessPage.getOrderNumber(page);
-        expect(orderNumber).toBeTruthy();
+        await new SuccessPage(page).expectToBeLoaded();
     });
 
-    test('should hide GST field when country is not India', async ({ page }) => {
-        await setupCheckout({
-            page,
-            productSku: 'loki-24-mb01',
-            quantity: 1,
-            country: 'US',
-            shippingMethod: ShippingMethod.FlatRate,
-            paymentMethod: PaymentMethod.CheckMoneyOrder,
-            customer: {
-                email: 'gst-test4@example.com',
-                firstname: 'Test',
-                lastname: 'User',
-                street: ['123 Test Street'],
-                city: 'New York',
-                postcode: '10001',
-                telephone: '2125551234',
-                region: 'New York',
-            },
-        });
+    test('should not show GST field when country is not India', async ({page, context}) => {
+        await setupCheckout(page, context, moduleConfig);
 
-        const gstField = page.locator('[data-type="field"][name="gst_number"]').first();
-        await expect(gstField).not.toBeVisible({ timeout: 5000 });
+        const gstField = new Field(page, 'shipping.gst_number');
+        await expect(gstField.getLocator()).toHaveCount(0);
     });
 });
