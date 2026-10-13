@@ -1,4 +1,4 @@
-import {Field, PaymentMethod, PlaceOrderButton, SuccessPage} from '@loki-checkout/checkout-objects';
+import {Field, PaymentMethod, PlaceOrderButton, ShippingMethod, SuccessPage} from '@loki-checkout/checkout-objects';
 import {setupCheckout} from '@loki/setup-checkout';
 import {test, expect} from '@loki/test';
 import moduleConfig from './config/config';
@@ -10,6 +10,7 @@ async function switchToIndia(page) {
     await new Field(page, 'shipping.country_id').fill('IN');
     await page.reload();
 
+    await new Field(page, 'shipping.street0').fill('123 Test Street');
     await new Field(page, 'shipping.region').fill('Maharashtra');
     await new Field(page, 'shipping.city').fill('Mumbai');
     await new Field(page, 'shipping.postcode').fill('400001');
@@ -42,6 +43,7 @@ test.describe('Indian GST Number field', () => {
         await gstField.fill(VALID_GST);
         await expect(gstField.getLocator()).not.toHaveAttribute('aria-invalid', 'true');
 
+        await new ShippingMethod(page, 'flatrate_flatrate').select();
         await new PaymentMethod(page, 'checkmo').select();
         await new PlaceOrderButton(page).click();
 
