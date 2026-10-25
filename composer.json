@@ -28,13 +28,6 @@
             "LokiCheckout\\IndianGst\\": ""
         }
     },
-    "extra": {
-        "loki": {
-            "countries": [
-                "IN"
-            ]
-        }
-    },
     "require-dev": {
         "yireo/magento2-integration-test-helper": "~0.0"
     }
