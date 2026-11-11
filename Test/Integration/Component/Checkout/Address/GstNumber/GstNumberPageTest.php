@@ -3,20 +3,14 @@ declare(strict_types=1);
 
 namespace LokiCheckout\IndianGst\Test\Integration\Component\Checkout\Address\GstNumber;
 
-use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
 class GstNumberPageTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        $objectManager = Bootstrap::getObjectManager();
-    }
-
     public function testComponentXmlIsValid(): void
     {
         $componentXml = file_get_contents(
-            __DIR__ . '/../../../../etc/loki_components.xml'
+            dirname(__DIR__, 6) . '/etc/loki_components.xml'
         );
 
         $this->assertStringContainsString('loki-checkout.shipping.address.gst_number', $componentXml);
@@ -29,7 +23,7 @@ class GstNumberPageTest extends TestCase
     public function testCountryHandleXmlIsValid(): void
     {
         $layoutXml = file_get_contents(
-            __DIR__ . '/../../../../view/frontend/layout/loki_checkout_country_in.xml'
+            dirname(__DIR__, 6) . '/view/frontend/layout/loki_checkout_country_in.xml'
         );
 
         $this->assertStringContainsString('loki-checkout.shipping.address.gst_number', $layoutXml);
@@ -40,7 +34,7 @@ class GstNumberPageTest extends TestCase
     public function testValidatorIsRegisteredInDi(): void
     {
         $diXml = file_get_contents(
-            __DIR__ . '/../../../../etc/di.xml'
+            dirname(__DIR__, 6) . '/etc/di.xml'
         );
 
         $this->assertStringContainsString('indianGstNumber', $diXml);
@@ -50,7 +44,7 @@ class GstNumberPageTest extends TestCase
     public function testFieldsetXmlIsValid(): void
     {
         $fieldsetXml = file_get_contents(
-            __DIR__ . '/../../../../etc/fieldset.xml'
+            dirname(__DIR__, 6) . '/etc/fieldset.xml'
         );
 
         $this->assertStringContainsString('sales_convert_quote_address', $fieldsetXml);

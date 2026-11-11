@@ -73,6 +73,7 @@ class QuoteToOrderAddressTest extends TestCase
             $quoteAddress
         );
 
-        $this->assertArrayNotHasKey('gst_number', $orderAddressData);
+        $this->assertArrayHasKey('gst_number', $orderAddressData);
+        $this->assertNull($orderAddressData['gst_number']);
     }
 }

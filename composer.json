@@ -8,6 +8,7 @@
     ],
     "type": "magento2-module",
     "require": {
+        "ext-pcre": "*",
         "loki-checkout/magento2-core": "^2.0",
         "loki/magento2-components": "^2.0",
         "loki/magento2-field-components": "^2.0",
@@ -29,6 +30,7 @@
         }
     },
     "require-dev": {
+        "phpunit/phpunit": "^10.5",
         "yireo/magento2-integration-test-helper": "~0.0"
     }
 }
