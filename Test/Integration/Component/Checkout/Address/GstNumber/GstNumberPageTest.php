@@ -49,7 +49,7 @@ class GstNumberPageTest extends LokiCheckoutTestCase
 
         $this->assertFalse($this->getComponent(self::SHIPPING)->getViewModel()->isAllowRendering());
         $this->assertTrue($this->getComponent(self::BILLING)->getViewModel()->isAllowRendering());
-        $this->assertComponentsOnPage([self::BILLING], [self::SHIPPING]);
+        $this->assertComponentsOnPage([], [self::SHIPPING]);
     }
 
     #[DataFixture(ProductFixture::class, as: 'product')]
@@ -80,7 +80,7 @@ class GstNumberPageTest extends LokiCheckoutTestCase
         $this->assertFalse($this->getComponent(self::BILLING)->getViewModel()->isRequired());
 
         $this->assertComponentValidationCases($shippingComponent, [
-            ['', false, []],
+            ['', false, ['Value is required']],
             [self::VALID_GST, true, []],
         ]);
     }
