@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace LokiCheckout\IndianGst\Test\Integration;
 
+use Magento\Framework\Module\ModuleListInterface;
+use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 use Yireo\IntegrationTestHelper\Test\Integration\Traits\AssertModuleIsEnabled;
 use Yireo\IntegrationTestHelper\Test\Integration\Traits\AssertModuleIsRegistered;
@@ -16,15 +18,16 @@ class ModuleTest extends TestCase
 
     public function testModuleIsEnabled(): void
     {
-        // @todo: Follow module.xml dependencies instead
-        $requiredModules = [
-            'LokiCheckout_IndianGst',
-            'LokiCheckout_Core',
-        ];
+        $moduleName = 'LokiCheckout_IndianGst';
+        $this->assertModuleIsRegistered($moduleName);
+        $this->assertModuleIsEnabled($moduleName);
 
-        foreach ($requiredModules as $moduleName) {
-            $this->assertModuleIsRegistered($moduleName);
-            $this->assertModuleIsEnabled($moduleName);
+        $module = Bootstrap::getObjectManager()->get(ModuleListInterface::class)->getOne($moduleName);
+        $this->assertNotEmpty($module['sequence']);
+
+        foreach ($module['sequence'] as $requiredModule) {
+            $this->assertModuleIsRegistered($requiredModule);
+            $this->assertModuleIsEnabled($requiredModule);
         }
     }
 }

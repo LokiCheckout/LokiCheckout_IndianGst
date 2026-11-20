@@ -3,54 +3,134 @@ declare(strict_types=1);
 
 namespace LokiCheckout\IndianGst\Test\Integration\Component\Checkout\Address\GstNumber;
 
-use PHPUnit\Framework\TestCase;
+use LokiCheckout\Core\Test\Integration\LokiCheckoutTestCase;
+use LokiCheckout\IndianGst\Test\Fixture\CartAddressFixture;
+use Magento\Catalog\Test\Fixture\Product as ProductFixture;
+use Magento\Quote\Test\Fixture\AddProductToCart as AddProductToCartFixture;
+use Magento\Quote\Test\Fixture\GuestCart as GuestCartFixture;
+use Magento\TestFramework\Fixture\AppArea;
+use Magento\TestFramework\Fixture\Config as ConfigFixture;
+use Magento\TestFramework\Fixture\DataFixture;
 
-class GstNumberPageTest extends TestCase
+#[AppArea('frontend')]
+class GstNumberPageTest extends LokiCheckoutTestCase
 {
-    public function testComponentXmlIsValid(): void
-    {
-        $componentXml = file_get_contents(
-            dirname(__DIR__, 6) . '/etc/loki_components.xml'
-        );
+    private const SHIPPING = 'loki-checkout.shipping.address.gst_number';
+    private const BILLING = 'loki-checkout.billing.address.gst_number';
+    private const VALID_GST = '27AAPFU0939F1ZV';
 
-        $this->assertStringContainsString('loki-checkout.shipping.address.gst_number', $componentXml);
-        $this->assertStringContainsString('loki-checkout.billing.address.gst_number', $componentXml);
-        $this->assertStringContainsString('indianGstNumber', $componentXml);
-        $this->assertStringContainsString('shippingAddressFields', $componentXml);
-        $this->assertStringContainsString('billingAddressFields', $componentXml);
+    #[DataFixture(ProductFixture::class, as: 'product')]
+    #[DataFixture(GuestCartFixture::class, as: 'cart')]
+    #[DataFixture(AddProductToCartFixture::class, ['cart_id' => '$cart.id$', 'product_id' => '$product.id$'])]
+    #[DataFixture(CartAddressFixture::class, ['cart_id' => '$cart.id$', 'gst_number' => self::VALID_GST])]
+    #[DataFixture(CartAddressFixture::class, ['cart_id' => '$cart.id$', 'address_type' => 'billing', 'country_id' => 'NL'])]
+    public function testFieldIsOnlyRenderedForIndianShippingAddress(): void
+    {
+        $this->dispatchToCheckout();
+
+        $shippingComponent = $this->getComponent(self::SHIPPING);
+        $this->assertTrue($shippingComponent->getViewModel()->isAllowRendering());
+        $this->assertFalse($shippingComponent->getViewModel()->isRequired());
+        $this->assertSame(self::VALID_GST, $shippingComponent->getRepository()->getValue());
+        $this->assertFalse($this->getComponent(self::BILLING)->getViewModel()->isAllowRendering());
+
+        $this->assertComponentsOnPage([self::SHIPPING], [self::BILLING]);
+        $this->assertStringOccursOnPage('placeholder="22AAAAA0000A1ZC"');
     }
 
-    public function testCountryHandleXmlIsValid(): void
+    #[DataFixture(ProductFixture::class, as: 'product')]
+    #[DataFixture(GuestCartFixture::class, as: 'cart')]
+    #[DataFixture(AddProductToCartFixture::class, ['cart_id' => '$cart.id$', 'product_id' => '$product.id$'])]
+    #[DataFixture(CartAddressFixture::class, ['cart_id' => '$cart.id$', 'country_id' => 'NL'])]
+    #[DataFixture(CartAddressFixture::class, ['cart_id' => '$cart.id$', 'address_type' => 'billing'])]
+    public function testFieldIsOnlyRenderedForIndianBillingAddress(): void
     {
-        $layoutXml = file_get_contents(
-            dirname(__DIR__, 6) . '/view/frontend/layout/loki_checkout_country_in.xml'
-        );
+        $this->dispatchToCheckout();
 
-        $this->assertStringContainsString('loki-checkout.shipping.address.gst_number', $layoutXml);
-        $this->assertStringContainsString('loki-checkout.billing.address.gst_number', $layoutXml);
-        $this->assertStringContainsString('gst_number', $layoutXml);
+        $this->assertFalse($this->getComponent(self::SHIPPING)->getViewModel()->isAllowRendering());
+        $this->assertTrue($this->getComponent(self::BILLING)->getViewModel()->isAllowRendering());
+        $this->assertComponentsOnPage([self::BILLING], [self::SHIPPING]);
     }
 
-    public function testValidatorIsRegisteredInDi(): void
+    #[DataFixture(ProductFixture::class, as: 'product')]
+    #[DataFixture(GuestCartFixture::class, as: 'cart')]
+    #[DataFixture(AddProductToCartFixture::class, ['cart_id' => '$cart.id$', 'product_id' => '$product.id$'])]
+    #[DataFixture(CartAddressFixture::class, ['cart_id' => '$cart.id$', 'country_id' => 'NL'])]
+    #[DataFixture(CartAddressFixture::class, ['cart_id' => '$cart.id$', 'address_type' => 'billing', 'country_id' => 'NL'])]
+    public function testFieldIsNotRenderedOutsideIndia(): void
     {
-        $diXml = file_get_contents(
-            dirname(__DIR__, 6) . '/etc/di.xml'
-        );
+        $this->dispatchToCheckout();
 
-        $this->assertStringContainsString('indianGstNumber', $diXml);
-        $this->assertStringContainsString('IndianGstNumberValidator', $diXml);
+        $this->assertComponentsOnPage([], [self::SHIPPING, self::BILLING]);
     }
 
-    public function testFieldsetXmlIsValid(): void
+    #[DataFixture(ProductFixture::class, as: 'product')]
+    #[DataFixture(GuestCartFixture::class, as: 'cart')]
+    #[DataFixture(AddProductToCartFixture::class, ['cart_id' => '$cart.id$', 'product_id' => '$product.id$'])]
+    #[DataFixture(CartAddressFixture::class, ['cart_id' => '$cart.id$'])]
+    #[DataFixture(CartAddressFixture::class, ['cart_id' => '$cart.id$', 'address_type' => 'billing', 'country_id' => 'NL'])]
+    #[ConfigFixture('loki_checkout/indian_gst/required', 1, 'store', 'default')]
+    public function testFieldIsRequiredWhenConfigured(): void
     {
-        $fieldsetXml = file_get_contents(
-            dirname(__DIR__, 6) . '/etc/fieldset.xml'
-        );
+        $this->dispatchToCheckout();
 
-        $this->assertStringContainsString('sales_convert_quote_address', $fieldsetXml);
-        $this->assertStringContainsString('gst_number', $fieldsetXml);
-        $this->assertStringContainsString('to_order_address', $fieldsetXml);
-        $this->assertStringContainsString('to_customer_address', $fieldsetXml);
-        $this->assertStringContainsString('to_quote_address', $fieldsetXml);
+        $shippingComponent = $this->getComponent(self::SHIPPING);
+        $this->assertTrue($shippingComponent->getViewModel()->isRequired());
+        $this->assertContains('required', $shippingComponent->getValidators());
+        $this->assertFalse($this->getComponent(self::BILLING)->getViewModel()->isRequired());
+
+        $this->assertComponentValidationCases($shippingComponent, [
+            ['', false, []],
+            [self::VALID_GST, true, []],
+        ]);
+    }
+
+    #[DataFixture(ProductFixture::class, as: 'product')]
+    #[DataFixture(GuestCartFixture::class, as: 'cart')]
+    #[DataFixture(AddProductToCartFixture::class, ['cart_id' => '$cart.id$', 'product_id' => '$product.id$'])]
+    #[DataFixture(CartAddressFixture::class, ['cart_id' => '$cart.id$'])]
+    public function testServerSideValidation(): void
+    {
+        $this->dispatchToCheckout();
+
+        $component = $this->getComponent(self::SHIPPING);
+        $this->assertContains('indianGstNumber', $component->getValidators());
+        $this->assertNotContains('required', $component->getValidators());
+
+        $this->assertComponentValidationCases($component, [
+            ['', true, []],
+            [self::VALID_GST, true, []],
+            ['27AAPFU0939F1Z', false, ['Invalid GST Number format. Expected format: 22AAAAA0000A1ZC']],
+            ['39AAPFU0939F1ZV', false, ['Invalid GST Number: The first two digits are not a valid GST state code']],
+            ['27AAPFU0939F1Z5', false, ['Invalid GST Number: The check character does not match']],
+        ]);
+    }
+
+    #[DataFixture(ProductFixture::class, as: 'product')]
+    #[DataFixture(GuestCartFixture::class, as: 'cart')]
+    #[DataFixture(AddProductToCartFixture::class, ['cart_id' => '$cart.id$', 'product_id' => '$product.id$'])]
+    #[DataFixture(CartAddressFixture::class, ['cart_id' => '$cart.id$'])]
+    public function testValueIsSavedInUppercaseWithoutSpaces(): void
+    {
+        $this->dispatchToCheckout();
+
+        $component = $this->getComponent(self::SHIPPING);
+        $filteredValue = $this->getFilter()->filter($component, '27 aapfu 0939f1zv');
+        $this->assertSame(self::VALID_GST, $filteredValue);
+
+        $component->getRepository()->saveValue($filteredValue);
+        $this->assertSame(self::VALID_GST, $this->getQuote()->getShippingAddress()->getGstNumber());
+    }
+
+    public function testCountryComponentsTargetGstNumber(): void
+    {
+        $this->assertContains(
+            self::SHIPPING,
+            $this->getComponent('loki-checkout.shipping.address.country_id')->getViewModel()->getTargets()
+        );
+        $this->assertContains(
+            self::BILLING,
+            $this->getComponent('loki-checkout.billing.address.country_id')->getViewModel()->getTargets()
+        );
     }
 }
