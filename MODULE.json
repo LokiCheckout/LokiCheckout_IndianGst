@@ -13,6 +13,7 @@
     "skip_magento_versions": [],
     "skip_css_utils": false,
     "sequence": [
+        "Magento_Config",
         "Magento_Customer",
         "Magento_Eav",
         "Magento_Quote",
