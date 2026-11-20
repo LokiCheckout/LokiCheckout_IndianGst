@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="loki_checkout_address_field_set_after">
+        <observer name="lokicheckout_indiangst_clear_gst_number_on_country_change" instance="LokiCheckout\IndianGst\Observer\ClearGstNumberOnCountryChange"/>
+    </event>
+</config>

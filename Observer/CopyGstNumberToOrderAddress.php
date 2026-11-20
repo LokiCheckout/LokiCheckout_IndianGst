@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace LokiCheckout\IndianGst\Observer;
 
+use LokiCheckout\IndianGst\Component\Checkout\Address\GstNumber\GstNumberViewModel;
+use Magento\Framework\DataObject;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Quote\Model\Quote;
-use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Model\Order;
 
 class CopyGstNumberToOrderAddress implements ObserverInterface
 {
@@ -15,20 +17,26 @@ class CopyGstNumberToOrderAddress implements ObserverInterface
         $quote = $observer->getEvent()->getQuote();
         $order = $observer->getEvent()->getOrder();
 
-        if (!$quote instanceof Quote || !$order instanceof OrderInterface) {
+        if (!$quote instanceof Quote || !$order instanceof Order) {
             return;
         }
 
-        $quoteShippingAddress = $quote->getShippingAddress();
-        $orderShippingAddress = $order->getShippingAddress();
-        if ($quoteShippingAddress && $orderShippingAddress) {
-            $orderShippingAddress->setGstNumber((string)$quoteShippingAddress->getGstNumber());
+        $this->copy($quote->getShippingAddress(), $order->getShippingAddress());
+        $this->copy($quote->getBillingAddress(), $order->getBillingAddress());
+    }
+
+    private function copy(?DataObject $quoteAddress, ?DataObject $orderAddress): void
+    {
+        if ($quoteAddress === null || $orderAddress === null) {
+            return;
         }
 
-        $quoteBillingAddress = $quote->getBillingAddress();
-        $orderBillingAddress = $order->getBillingAddress();
-        if ($quoteBillingAddress && $orderBillingAddress) {
-            $orderBillingAddress->setGstNumber((string)$quoteBillingAddress->getGstNumber());
+        $gstNumber = (string)$quoteAddress->getData('gst_number');
+        if ($gstNumber === '' || $orderAddress->getData('country_id') !== GstNumberViewModel::COUNTRY_ID) {
+            $orderAddress->setData('gst_number', null);
+            return;
         }
+
+        $orderAddress->setData('gst_number', $gstNumber);
     }
 }
