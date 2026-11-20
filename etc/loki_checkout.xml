@@ -2,7 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:LokiCheckout_Core:etc/loki_checkout.xsd">
     <grid_layouts>
         <grid_layout name="default_grid">
-            <grid name="india" countryId="IN" parent="default">
+            <grid name="default">
                 <block alias="gst_number" sortOrder="170"/>
             </grid>
         </grid_layout>
