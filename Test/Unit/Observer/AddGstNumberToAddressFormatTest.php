@@ -96,8 +96,9 @@ class AddGstNumberToAddressFormatTest extends TestCase
         $this->observer->execute($observer);
 
         $format = $type->getDefaultFormat();
-        $this->assertStringContainsString('GST: {{var gst_number}}', $format);
+        $this->assertStringEndsWith('{{depend gst_number}}GST: {{var gst_number}}|{{/depend}}', $format);
         $this->assertStringNotContainsString('<br/>', $format);
+        $this->assertStringNotContainsString("\n", $format);
     }
 
     public function testAppendsToOnelineFormat(): void
@@ -113,7 +114,8 @@ class AddGstNumberToAddressFormatTest extends TestCase
         $this->observer->execute($observer);
 
         $format = $type->getDefaultFormat();
-        $this->assertStringContainsString('GST: {{var gst_number}}', $format);
+        $this->assertStringEndsWith('{{depend gst_number}}, GST: {{var gst_number}}{{/depend}}', $format);
         $this->assertStringNotContainsString('<br/>', $format);
+        $this->assertStringNotContainsString("\n", $format);
     }
 }

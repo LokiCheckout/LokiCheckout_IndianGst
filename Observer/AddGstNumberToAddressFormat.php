@@ -8,8 +8,13 @@ use Magento\Framework\Event\ObserverInterface;
 
 class AddGstNumberToAddressFormat implements ObserverInterface
 {
-    private const HTML_SUFFIX = '{{depend gst_number}}<br/>GST: {{var gst_number}}{{/depend}}';
-    private const TEXT_SUFFIX = "\n{{depend gst_number}}GST: {{var gst_number}}{{/depend}}";
+    private const SUFFIXES = [
+        'html' => '{{depend gst_number}}<br/>GST: {{var gst_number}}{{/depend}}',
+        'pdf' => '{{depend gst_number}}GST: {{var gst_number}}|{{/depend}}',
+        'oneline' => '{{depend gst_number}}, GST: {{var gst_number}}{{/depend}}',
+    ];
+
+    private const DEFAULT_SUFFIX = "\n{{depend gst_number}}GST: {{var gst_number}}{{/depend}}";
 
     public function execute(Observer $observer): void
     {
@@ -24,7 +29,7 @@ class AddGstNumberToAddressFormat implements ObserverInterface
         }
 
         $typeCode = (string)$type->getCode();
-        $suffix = $typeCode === 'html' ? self::HTML_SUFFIX : self::TEXT_SUFFIX;
+        $suffix = self::SUFFIXES[$typeCode] ?? self::DEFAULT_SUFFIX;
         $type->setDefaultFormat($format . $suffix);
     }
 }
