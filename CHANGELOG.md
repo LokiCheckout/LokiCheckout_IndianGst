@@ -6,13 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 21 November 2026
 ### Added
-- Optional `gst_number` address field for billing and shipping addresses
-- GSTIN format validation (server-side `IndianGstNumberValidator` + client-side `LokiComponentValidator.validators.indianGstNumber`)
-- Country-specific display via `loki_checkout_country_in.xml` (India only)
-- Database column on `quote_address` and `sales_order_address`
-- Customer address EAV attribute with data patch
-- Fieldset entries for quote-to-order, customer-to-quote, and save-in-address-book copy
-- Address format observer (`customer_address_format`) for email/order/admin display
-- Sidebar preview blocks showing GST number in checkout summary
-- Admin order address edit form support via EAV `used_in_forms`
+- Optional GST Number field for billing and shipping addresses (India only)
+- Show GST Number field per address country without page reload
+- GSTIN validation (format, state code and check character), server- and client-side
+- Setting to make the GST Number required
+- Database columns on `quote_address` and `sales_order_address`
+- Customer address attribute, saved in address book and copied from quote to order
+- GST Number in address formats (email, order, admin, PDF and oneline)
+- GST Number in checkout sidebar summary and admin order address edit form
+- Drop GST Number from addresses outside India
+- PHP 8.6 compatibility
