@@ -1,7 +1,54 @@
 {
-    "modules": [],
-    "config": [],
-    "tests": [],
+    "modules": [
+        "LokiCheckout_Core",
+        "Loki_Base",
+        "Loki_Components",
+        "Loki_CssUtils",
+        "Loki_FieldComponents",
+        "Magento_AdminNotification",
+        "Magento_Backend",
+        "Magento_Catalog",
+        "Magento_CatalogInventory",
+        "Magento_Checkout",
+        "Magento_CheckoutAgreements",
+        "Magento_Cms",
+        "Magento_Config",
+        "Magento_Csp",
+        "Magento_Customer",
+        "Magento_Directory",
+        "Magento_Eav",
+        "Magento_Indexer",
+        "Magento_MediaGalleryUiApi",
+        "Magento_Newsletter",
+        "Magento_Payment",
+        "Magento_Quote",
+        "Magento_Rule",
+        "Magento_Sales",
+        "Magento_SalesRule",
+        "Magento_SalesSequence",
+        "Magento_Shipping",
+        "Magento_Store",
+        "Magento_Tax",
+        "Magento_Theme",
+        "Magento_Ui",
+        "Magento_User",
+        "Magento_Variable",
+        "Magento_Vault",
+        "Magento_Widget",
+        "Yireo_CspUtilities"
+    ],
+    "config": [
+        {
+            "path": "loki_checkout/indian_gst/required",
+            "label": "Indian GST > Require GST Number",
+            "description": ""
+        }
+    ],
+    "tests": {
+        "unit": 11,
+        "integration": 28,
+        "functional": 12
+    },
     "module_name": "LokiCheckout_IndianGst",
     "composer_name": "loki-checkout/magento2-indian-gst",
     "php_versions": [
@@ -13,17 +60,23 @@
     "skip_magento_versions": [],
     "skip_css_utils": false,
     "sequence": [
+        "LokiCheckout_Core",
+        "Loki_Components",
+        "Loki_FieldComponents",
         "Magento_Backend",
         "Magento_Config",
         "Magento_Customer",
         "Magento_Eav",
         "Magento_Quote",
         "Magento_Sales",
-        "Magento_Store",
-        "LokiCheckout_Core",
-        "Loki_FieldComponents",
-        "Loki_Components"
+        "Magento_Store"
     ],
     "phpcs_severity": "6",
-    "phpstan_level": "1"
+    "phpstan_level": "1",
+    "components": [
+        "loki-checkout.billing.address.country_id",
+        "loki-checkout.billing.address.gst_number",
+        "loki-checkout.shipping.address.country_id",
+        "loki-checkout.shipping.address.gst_number"
+    ]
 }
